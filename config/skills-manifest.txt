@@ -17,3 +17,24 @@ conventional-commits
 
 # GitHub — interact with GitHub (issues, PRs, CI runs) via gh CLI
 github
+
+# Skill Improving Agent
+skill-improving-agent
+
+# Skill Vetter
+skill-vetter
+
+# Google workspace
+gog 
+
+# Nano PDF
+nano-pdf
+
+# Nano Banana Pro
+nano-banana-pro
+
+# Notion 
+notion
+
+# Stock Analysis
+stock-analysis
