@@ -32,6 +32,9 @@ RUN ARCH=$(dpkg --print-architecture) \
      -o /tmp/gogcli.tar.gz \
   && tar -xzf /tmp/gogcli.tar.gz -C /usr/local/bin gog \
   && chmod +x /usr/local/bin/gog \
+  && mv /usr/local/bin/gog /usr/local/bin/gog-bin \
+  && echo '#!/bin/sh\nexport GOG_KEYRING_BACKEND=file\nexport GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD:-}\nexport XDG_DATA_HOME=/home/node/.openclaw/.local/share\nexec /usr/local/bin/gog-bin "$@"' > /usr/local/bin/gog \
+  && chmod +x /usr/local/bin/gog \
   && rm /tmp/gogcli.tar.gz
 
 # Install GitHub CLI (required by github skill)
@@ -40,6 +43,9 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
   > /etc/apt/sources.list.d/github-cli.list \
   && apt-get update && apt-get install -y --no-install-recommends gh \
+  && mv /usr/bin/gh /usr/bin/gh-bin \
+  && echo '#!/bin/sh\nexport GH_CONFIG_DIR=/home/node/.openclaw/gh\nexec /usr/bin/gh-bin "$@"' > /usr/bin/gh \
+  && chmod +x /usr/bin/gh \
   && rm -rf /var/lib/apt/lists/*
 
 # Pin OpenClaw version for reproducible builds — bump explicitly when upgrading
