@@ -10,24 +10,40 @@ FROM node:22-bookworm-slim
 
 # Install system dependencies as root
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    chromium \
-    ca-certificates \
-    gnupg \
-    tini \
+  git \
+  curl \
+  chromium \
+  ca-certificates \
+  gnupg \
+  tini \
+  python3 \
+  python3-venv \
   && rm -rf /var/lib/apt/lists/*
+
+# Install uv (fast Python package manager — required by nano-pdf and other Python skills)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+  && mv /root/.local/bin/uv /usr/local/bin/uv \
+  && mv /root/.local/bin/uvx /usr/local/bin/uvx
+
+# Install gogcli (Google Workspace CLI — required by gog skill)
+ARG GOGCLI_VERSION=0.15.0
+RUN ARCH=$(dpkg --print-architecture) \
+  && curl -fsSL "https://github.com/openclaw/gogcli/releases/download/v${GOGCLI_VERSION}/gogcli_${GOGCLI_VERSION}_linux_${ARCH}.tar.gz" \
+     -o /tmp/gogcli.tar.gz \
+  && tar -xzf /tmp/gogcli.tar.gz -C /usr/local/bin gog \
+  && chmod +x /usr/local/bin/gog \
+  && rm /tmp/gogcli.tar.gz
 
 # Install GitHub CLI (required by github skill)
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-      | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-      > /etc/apt/sources.list.d/github-cli.list \
+  > /etc/apt/sources.list.d/github-cli.list \
   && apt-get update && apt-get install -y --no-install-recommends gh \
   && rm -rf /var/lib/apt/lists/*
 
 # Pin OpenClaw version for reproducible builds — bump explicitly when upgrading
-ARG OPENCLAW_VERSION=2026.4.9
+ARG OPENCLAW_VERSION=2026.5.7
 RUN npm install -g openclaw@${OPENCLAW_VERSION}
 
 # Install ClawHub CLI for skill management

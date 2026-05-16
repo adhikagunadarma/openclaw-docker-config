@@ -10,8 +10,19 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      OPENCLAW_CORS_ORIGIN: ${OPENCLAW_CORS_ORIGIN:-https://openclaw.local}
+      TELEGRAM_ADMIN_1: ${TELEGRAM_ADMIN_1:-}
+      TELEGRAM_ADMIN_2: ${TELEGRAM_ADMIN_2:-}
+      TELEGRAM_ADMIN_3: ${TELEGRAM_ADMIN_3:-}
+      TELEGRAM_GROUP_1: ${TELEGRAM_GROUP_1:-}
+      TELEGRAM_GROUP_2: ${TELEGRAM_GROUP_2:-}
       BRAVE_API_KEY: ${BRAVE_API_KEY}
       GH_TOKEN: ${GH_TOKEN:-}
+      # gogcli: use file-based keyring so OAuth tokens survive container restarts
+      XDG_DATA_HOME: /home/node/.openclaw/.local/share
+      GOG_KEYRING_BACKEND: file
+      GOG_KEYRING_PASSWORD: ${GOG_KEYRING_PASSWORD:-openclaw-gog-keyring}
+      GH_CONFIG_DIR: /home/node/.openclaw/gh
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-/home/openclaw/.openclaw}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR:-/home/openclaw/.openclaw/workspace}:/home/node/.openclaw/workspace
