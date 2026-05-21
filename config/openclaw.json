@@ -47,6 +47,14 @@
     "entries": {
       "telegram": {
         "enabled": true
+      },
+      "brave": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "mode": "web"
+          }
+        }
       }
     }
   },
@@ -60,7 +68,12 @@
       },
       "model": {
         "primary": "openai-codex/gpt-5.4",
-        "fallbacks": ["openai-codex/gpt-5.4-mini", "openai/gpt-5.4-nano", "google/gemini-2.5-flash", "deepseek/deepseek-v4-flash"]
+        "fallbacks": [
+          "openai-codex/gpt-5.4-mini",
+          "openai/gpt-5.4-nano",
+          "google/gemini-2.5-flash",
+          "deepseek/deepseek-v4-flash"
+        ]
       },
       "models": {
         "google/gemini-2.5-flash": {
@@ -113,27 +126,44 @@
         },
         "zai/glm-4.7-flash": {
           "alias": "zai-glm-4.7-flash"
+        },
+        "litellm/claude-opus-4-6": {
+          "alias": "litellm-claude-opus-4-6"
+        },
+        "litellm/claude-opus-4-7": {
+          "alias": "litellm-claude-opus-4-7"
+        },
+        "litellm/claude-sonnet-4-6": {
+          "alias": "litellm-claude-sonnet-4-6"
         }
       },
       "imageModel": {
         "primary": "openai-codex/gpt-image-1-mini",
-        "fallbacks": ["openai/gpt-image-1-mini", "google/gemini-2.5-flash-image"]
+        "fallbacks": [
+          "openai/gpt-image-1-mini",
+          "google/gemini-2.5-flash-image"
+        ]
       },
       "imageGenerationModel": {
         "primary": "openai-codex/gpt-image-1-mini",
-        "fallbacks": ["openai/gpt-image-1-mini", "google/gemini-2.5-flash-image"]
+        "fallbacks": [
+          "openai/gpt-image-1-mini",
+          "google/gemini-2.5-flash-image"
+        ]
       },
       "pdfModel": {
         "primary": "openai-codex/gpt-5.4",
-        "fallbacks": ["deepseek/deepseek-v4-flash", "google/gemini-2.5-flash"]
-
+        "fallbacks": [
+          "deepseek/deepseek-v4-flash",
+          "google/gemini-2.5-flash"
+        ]
       },
       "compaction": {
         "mode": "safeguard",
         "model": "openai-codex/gpt-5.4-mini"
       },
       "heartbeat": {
-        "every": "6h", 
+        "every": "6h",
         "model": "openai-codex/gpt-5.4-mini",
         "session": "main",
         "target": "telegram",
@@ -165,6 +195,10 @@
       "openai-codex:oauth": {
         "provider": "openai-codex",
         "mode": "oauth"
+      },
+      "litellm:apikey": {
+        "provider": "litellm",
+        "mode": "api_key"
       }
     },
     "order": {
@@ -176,6 +210,9 @@
       ],
       "openai-codex": [
         "openai-codex:oauth"
+      ],
+      "litellm": [
+        "litellm:apikey"
       ]
     }
   },
@@ -183,5 +220,19 @@
     "level": "info",
     "consoleLevel": "info",
     "redactSensitive": "tools"
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "provider": "brave",
+        "maxResults": 5,
+        "timeoutSeconds": 30
+      }
+    }
+  },
+  "browser": {
+    "enabled": true,
+    "headless": true,
+    "noSandbox": true
   }
 }
