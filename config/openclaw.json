@@ -34,10 +34,10 @@
         "${TELEGRAM_ADMIN_3}"
       ],
       "groups": {
-        "${TELEGRAM_GROUP_1}": {
+        "-1003890684313": {
           "requireMention": true
         },
-        "${TELEGRAM_GROUP_2}": {
+        "-1003788752801": {
           "requireMention": true
         }
       }
