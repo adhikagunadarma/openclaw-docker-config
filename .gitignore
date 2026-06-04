@@ -6,3 +6,6 @@ client_secret*.json
 sessions/
 node_modules/
 .DS_Store
+
+# Ignore secrets folder
+secrets/
