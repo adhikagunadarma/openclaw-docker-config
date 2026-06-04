@@ -40,4 +40,4 @@ notion
 stock-analysis
 
 # FlyAI
-flyai
+flyai

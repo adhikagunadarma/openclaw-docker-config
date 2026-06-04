@@ -61,6 +61,7 @@ RUN mkdir -p /home/node/.openclaw/workspace /.clawhub \
 
 # Copy skills manifest, workspace templates, and entrypoint
 COPY config/skills-manifest.txt /opt/config/skills-manifest.txt
+RUN sed -i 's/\r$//' /opt/config/skills-manifest.txt && echo "" >> /opt/config/skills-manifest.txt
 COPY workspace-templates/ /opt/workspace-templates/
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
