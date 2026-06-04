@@ -38,3 +38,6 @@ notion
 
 # Stock Analysis
 stock-analysis
+
+# FlyAI
+flyai
