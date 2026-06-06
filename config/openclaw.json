@@ -61,6 +61,25 @@
       }
     }
   },
+  "skills": {
+    "entries": {
+      "browser-automation": {
+        "enabled": true
+      },
+      "healthcheck": {
+        "enabled": true
+      },
+      "taskflow": {
+        "enabled": true
+      },
+      "weather": {
+        "enabled": true
+      }
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
   "agents": {
     "defaults": {
       "contextLimits": {
@@ -171,7 +190,10 @@
   },
   "commands": {
     "native": "auto",
-    "nativeSkills": "auto"
+    "nativeSkills": "auto",
+    "ownerAllowFrom": [
+      "telegram:1527378541"
+    ]
   },
   "messages": {
     "ackReactionScope": "group-mentions"
