@@ -33,7 +33,7 @@ RUN ARCH=$(dpkg --print-architecture) \
   && tar -xzf /tmp/gogcli.tar.gz -C /usr/local/bin gog \
   && chmod +x /usr/local/bin/gog \
   && mv /usr/local/bin/gog /usr/local/bin/gog-bin \
-  && echo '#!/bin/sh\nexport GOG_KEYRING_BACKEND=file\nexport GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD:-openclaw-gog-keyring}\nexport XDG_DATA_HOME=/home/node/.openclaw/.local/share\nexec /usr/local/bin/gog-bin "$@"' > /usr/local/bin/gog \
+  && echo '#!/bin/sh\nexport GOG_KEYRING_BACKEND=file\nexport GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD:-openclaw-gog-keyring}\nexport XDG_CONFIG_HOME=/home/node/.openclaw/.config\nexport XDG_DATA_HOME=/home/node/.openclaw/.local/share\nexec /usr/local/bin/gog-bin "$@"' > /usr/local/bin/gog \
   && chmod +x /usr/local/bin/gog \
   && rm /tmp/gogcli.tar.gz
 
