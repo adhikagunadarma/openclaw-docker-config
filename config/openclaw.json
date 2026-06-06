@@ -45,6 +45,9 @@
   },
   "plugins": {
     "entries": {
+      "codex": {
+        "enabled": true
+      },
       "telegram": {
         "enabled": true
       },
@@ -67,10 +70,9 @@
         "postCompactionMaxChars": 1000
       },
       "model": {
-        "primary": "openai-codex/gpt-5.4",
+        "primary": "openai/gpt-5.5",
         "fallbacks": [
-          "openai-codex/gpt-5.4-mini",
-          "openai/gpt-5.4-nano",
+          "openai/gpt-5.4",
           "google/gemini-2.5-flash",
           "deepseek/deepseek-v4-flash"
         ]
@@ -88,6 +90,12 @@
         "google/gemini-2.5-flash-image": {
           "alias": "gemini-flash-image-2.5"
         },
+        "openai/gpt-5.4": {
+          "alias": "openai-gpt-5.4"
+        },
+        "openai/gpt-5.4-mini": {
+          "alias": "openai-gpt-5.4-mini"
+        },
         "openai/gpt-5.5": {
           "alias": "openai-gpt-5.5"
         },
@@ -96,18 +104,6 @@
         },
         "openai/gpt-image-1-mini": {
           "alias": "openai-gpt-image-1-mini"
-        },
-        "openai-codex/gpt-5.5": {
-          "alias": "openai-codex-gpt-5.5"
-        },
-        "openai-codex/gpt-5.4": {
-          "alias": "openai-codex-gpt-5.4"
-        },
-        "openai-codex/gpt-5.4-mini": {
-          "alias": "openai-codex-gpt-5.4-mini"
-        },
-        "openai-codex/gpt-image-1-mini": {
-          "alias": "openai-codex-gpt-image-1-mini"
         },
         "deepseek/deepseek-v4-flash": {
           "alias": "deepseek-v4-flash"
@@ -138,21 +134,19 @@
         }
       },
       "imageModel": {
-        "primary": "openai-codex/gpt-image-1-mini",
+        "primary": "openai/gpt-image-1-mini",
         "fallbacks": [
-          "openai/gpt-image-1-mini",
           "google/gemini-2.5-flash-image"
         ]
       },
       "imageGenerationModel": {
-        "primary": "openai-codex/gpt-image-1-mini",
+        "primary": "openai/gpt-image-1-mini",
         "fallbacks": [
-          "openai/gpt-image-1-mini",
           "google/gemini-2.5-flash-image"
         ]
       },
       "pdfModel": {
-        "primary": "openai-codex/gpt-5.4",
+        "primary": "openai/gpt-5.4",
         "fallbacks": [
           "deepseek/deepseek-v4-flash",
           "google/gemini-2.5-flash"
@@ -160,11 +154,11 @@
       },
       "compaction": {
         "mode": "safeguard",
-        "model": "openai-codex/gpt-5.4-mini"
+        "model": "openai/gpt-5.4-mini"
       },
       "heartbeat": {
         "every": "6h",
-        "model": "openai-codex/gpt-5.4-mini",
+        "model": "openai/gpt-5.4-mini",
         "session": "main",
         "target": "telegram",
         "prompt": "Check: Any blockers, opportunities, or progress updates needed?"
@@ -192,10 +186,6 @@
         "provider": "openai",
         "mode": "oauth"
       },
-      "openai-codex:oauth": {
-        "provider": "openai-codex",
-        "mode": "oauth"
-      },
       "litellm:apikey": {
         "provider": "litellm",
         "mode": "api_key"
@@ -207,9 +197,6 @@
       ],
       "openai": [
         "openai:oauth"
-      ],
-      "openai-codex": [
-        "openai-codex:oauth"
       ],
       "litellm": [
         "litellm:apikey"
