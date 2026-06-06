@@ -25,6 +25,10 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
   && mv /root/.local/bin/uv /usr/local/bin/uv \
   && mv /root/.local/bin/uvx /usr/local/bin/uvx
 
+# Install Python packages required by the stock-analysis skill. These must be
+# present in the image because cron jobs run after container replacement.
+RUN uv pip install --system --no-cache-dir pandas yfinance
+
 # Install gogcli (Google Workspace CLI — required by gog skill)
 ARG GOGCLI_VERSION=0.15.0
 RUN ARCH=$(dpkg --print-architecture) \
@@ -54,6 +58,9 @@ RUN npm install -g openclaw@${OPENCLAW_VERSION}
 
 # Install ClawHub CLI for skill management
 RUN npm install -g clawhub
+
+# Install FlyAI CLI for flight/travel searches. The executable is `flyai`.
+RUN npm install -g @fly-ai/flyai-cli
 
 # Create OpenClaw directories owned by node
 RUN mkdir -p /home/node/.openclaw/workspace /.clawhub \
