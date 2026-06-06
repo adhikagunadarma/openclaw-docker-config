@@ -27,7 +27,10 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 # Install Python packages required by the stock-analysis skill. These must be
 # present in the image because cron jobs run after container replacement.
-RUN uv pip install --system --no-cache-dir pandas yfinance
+RUN uv venv /opt/openclaw-python \
+  && uv pip install --python /opt/openclaw-python/bin/python --no-cache-dir pandas yfinance
+ENV VIRTUAL_ENV=/opt/openclaw-python
+ENV PATH="/opt/openclaw-python/bin:${PATH}"
 
 # Install gogcli (Google Workspace CLI — required by gog skill)
 ARG GOGCLI_VERSION=0.15.0
