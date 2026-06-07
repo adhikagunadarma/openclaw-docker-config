@@ -110,19 +110,34 @@
           "alias": "gemini-flash-image-2.5"
         },
         "openai/gpt-5.4": {
-          "alias": "openai-gpt-5.4"
+          "alias": "openai-gpt-5.4",
+          "agentRuntime": {
+            "id": "codex"
+          }
         },
         "openai/gpt-5.4-mini": {
-          "alias": "openai-gpt-5.4-mini"
+          "alias": "openai-gpt-5.4-mini",
+          "agentRuntime": {
+            "id": "codex"
+          }
         },
         "openai/gpt-5.5": {
-          "alias": "openai-gpt-5.5"
+          "alias": "openai-gpt-5.5",
+          "agentRuntime": {
+            "id": "codex"
+          }
         },
         "openai/gpt-5.4-nano": {
-          "alias": "openai-gpt-5.4-nano"
+          "alias": "openai-gpt-5.4-nano",
+          "agentRuntime": {
+            "id": "codex"
+          }
         },
         "openai/gpt-image-1-mini": {
-          "alias": "openai-gpt-image-1-mini"
+          "alias": "openai-gpt-image-1-mini",
+          "agentRuntime": {
+            "id": "codex"
+          }
         },
         "deepseek/deepseek-v4-flash": {
           "alias": "deepseek-v4-flash"

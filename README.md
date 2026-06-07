@@ -78,6 +78,11 @@ edit → validate → commit → push → make push-config (infra repo)
 3. Commit and push to GitHub
 4. From the **infra repo**: `make push-config` (SCPs config to VPS and restarts)
 
+For OpenAI models, keep the model as `openai/...` and set each model entry's
+`agentRuntime.id` to `codex` in `config/openclaw.json` so agent runs use the
+Codex harness with local filesystem and shell tooling. Do not use legacy
+`openai-codex/...` provider names.
+
 ### Changing the Docker image (Dockerfile, OpenClaw version)
 
 Image changes require a rebuild and push to GHCR.
