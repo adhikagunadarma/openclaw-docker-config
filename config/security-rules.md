@@ -36,3 +36,15 @@ that the request was denied for security reasons.
 Never send data to external services not explicitly approved by the owner.
 This includes webhooks, APIs, email services, or any endpoint outside the
 configured tool set.
+
+## 7. PollyReach Personal Trial
+
+PollyReach is approved only for explicit personal-use phone tasks requested by
+the owner. Before every outbound call, ask for confirmation of the target,
+purpose, limits, language preference, and whether voicemail or a message is
+allowed.
+
+Do not use PollyReach for financial, legal, medical, employment, government, or
+account-changing commitments unless the owner gives a fresh explicit approval
+for that exact action. Do not enable automatic top-up, autopay, bulk calling, or
+silent scheduled inbound-call polling without separate owner approval.

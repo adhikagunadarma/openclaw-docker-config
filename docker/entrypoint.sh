@@ -24,8 +24,11 @@ if [[ -f "$MANIFEST" ]]; then
     line="$(echo "$line" | xargs)"
     [[ -z "$line" ]] && continue
 
-    # Skip if already installed
-    if [[ -d "$WORKDIR/skills/$line" ]]; then
+    install_dir="${line##*/}"
+
+    # Skip if already installed. Scoped ClawHub names like @owner/skill usually
+    # land in the workspace by their skill slug.
+    if [[ -d "$WORKDIR/skills/$line" || -d "$WORKDIR/skills/$install_dir" ]]; then
       echo "[entrypoint]   ✓ $line (already installed)"
       continue
     fi

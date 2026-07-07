@@ -41,3 +41,7 @@ stock-analysis
 
 # FlyAI
 flyai
+
+# PollyReach — phone calls and incoming-call answering.
+# Personal trial only; see config/security-rules.md and docs/pollyreach-personal-trial.md.
+@pollyreach/pollyreach

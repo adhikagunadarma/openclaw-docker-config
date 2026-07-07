@@ -44,6 +44,11 @@
     }
   },
   "plugins": {
+    "allow": [
+      "codex",
+      "telegram",
+      "brave"
+    ],
     "entries": {
       "codex": {
         "enabled": true
