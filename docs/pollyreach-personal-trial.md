@@ -4,8 +4,8 @@ Last reviewed: 2026-07-05
 
 ## Decision
 
-Do not install PollyReach into production by default yet. Treat it as a
-personal-use trial candidate first.
+PollyReach is enabled as a personal-use trial. It is not approved for
+unattended calling, automatic payments, or high-risk tasks.
 
 PollyReach is useful if the OpenClaw agent should make real phone calls or
 answer a dedicated phone number for personal tasks such as:
@@ -111,8 +111,10 @@ After every call, report:
   for an initial personal trial.
 - Some helper scripts interpolate user text directly into JSON, so quotes or
   newlines can break requests.
-- `inbound.sh` depends on `jq`; the current image does not install it.
-- `balance.sh` depends on `bc`; the current image does not install it.
+- `inbound.sh` depends on `jq`; the image now installs it explicitly.
+- `balance.sh` depends on `bc`; the image now installs it explicitly.
+- The credential path expected by PollyReach is linked into the persistent
+  OpenClaw state directory so activation survives container replacement.
 - The skill requires polling for results; PollyReach does not push completion
   messages directly to the agent.
 

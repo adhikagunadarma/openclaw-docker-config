@@ -41,12 +41,21 @@
           "requireMention": true
         }
       }
+    },
+    "whatsapp": {
+      "dmPolicy": "allowlist",
+      "allowFrom": [
+        "${WHATSAPP_ADMIN_1}"
+      ],
+      "groupPolicy": "disabled",
+      "configWrites": false
     }
   },
   "plugins": {
     "allow": [
       "codex",
       "telegram",
+      "whatsapp",
       "brave"
     ],
     "entries": {
@@ -54,6 +63,9 @@
         "enabled": true
       },
       "telegram": {
+        "enabled": true
+      },
+      "whatsapp": {
         "enabled": true
       },
       "brave": {
@@ -212,7 +224,8 @@
     "native": "auto",
     "nativeSkills": "auto",
     "ownerAllowFrom": [
-      "telegram:1527378541"
+      "telegram:1527378541",
+      "whatsapp:${WHATSAPP_ADMIN_1}"
     ]
   },
   "messages": {

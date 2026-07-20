@@ -1,0 +1,5 @@
+# OpenClaw plugins installed into the persistent state directory at startup.
+# Format: plugin-id|install-spec
+
+# Match the plugin to the OpenClaw version pinned in docker/Dockerfile.
+whatsapp|npm:@openclaw/whatsapp@2026.6.11

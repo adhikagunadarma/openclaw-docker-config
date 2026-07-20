@@ -48,3 +48,13 @@ Do not use PollyReach for financial, legal, medical, employment, government, or
 account-changing commitments unless the owner gives a fresh explicit approval
 for that exact action. Do not enable automatic top-up, autopay, bulk calling, or
 silent scheduled inbound-call polling without separate owner approval.
+
+## 8. WhatsApp Personal Channel
+
+WhatsApp is approved only for direct messages from the configured owner
+allowlist. Keep groups, channel-initiated config writes, and experimental
+WhatsApp voice calls disabled unless the owner explicitly approves them.
+
+A request received through WhatsApp does not bypass tool or PollyReach
+confirmation requirements. Before any real phone call or other external side
+effect, apply the same explicit confirmation rules used on every other channel.

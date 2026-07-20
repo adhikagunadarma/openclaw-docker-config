@@ -71,9 +71,12 @@ RUN npm install -g @fly-ai/flyai-cli
 RUN mkdir -p /home/node/.openclaw/workspace /.clawhub \
   && chown -R node:node /home/node/.openclaw /.clawhub
 
-# Copy skills manifest, workspace templates, and entrypoint
+# Copy plugin/skill manifests, workspace templates, and entrypoint
+COPY config/plugins-manifest.txt /opt/config/plugins-manifest.txt
 COPY config/skills-manifest.txt /opt/config/skills-manifest.txt
-RUN sed -i 's/\r$//' /opt/config/skills-manifest.txt && echo "" >> /opt/config/skills-manifest.txt
+RUN sed -i 's/\r$//' /opt/config/plugins-manifest.txt /opt/config/skills-manifest.txt \
+  && echo "" >> /opt/config/plugins-manifest.txt \
+  && echo "" >> /opt/config/skills-manifest.txt
 COPY workspace-templates/ /opt/workspace-templates/
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
