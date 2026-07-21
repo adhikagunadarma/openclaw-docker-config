@@ -46,6 +46,23 @@ RUN ARCH=$(dpkg --print-architecture) \
   && chmod +x /usr/local/bin/gog \
   && rm /tmp/gogcli.tar.gz
 
+# Install wacli for explicit, owner-approved WhatsApp messages to third parties.
+# This is separate from the inbound OpenClaw WhatsApp channel allowlist.
+ARG WACLI_VERSION=0.13.0
+RUN ARCH=$(dpkg --print-architecture) \
+  && case "$ARCH" in \
+       amd64) WACLI_SHA256="147181bd5ef6ae38bdbccfc81c3ac913d4a8ec87b28713a5ecffc24fb46aa831" ;; \
+       arm64) WACLI_SHA256="54bcf9c16ae86f60edd9d5135baaaf5ffcada9b1a6f56f3616aeca223d126af1" ;; \
+       *) echo "Unsupported wacli architecture: $ARCH" >&2; exit 1 ;; \
+     esac \
+  && WACLI_ARCHIVE="wacli_${WACLI_VERSION}_linux_${ARCH}.tar.gz" \
+  && curl -fsSL "https://github.com/openclaw/wacli/releases/download/v${WACLI_VERSION}/${WACLI_ARCHIVE}" \
+     -o "/tmp/${WACLI_ARCHIVE}" \
+  && echo "${WACLI_SHA256}  /tmp/${WACLI_ARCHIVE}" | sha256sum -c - \
+  && tar -xzf "/tmp/${WACLI_ARCHIVE}" -C /usr/local/bin wacli \
+  && chmod +x /usr/local/bin/wacli \
+  && rm "/tmp/${WACLI_ARCHIVE}"
+
 # Install GitHub CLI (required by github skill)
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \

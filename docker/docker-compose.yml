@@ -19,6 +19,7 @@ services:
       TELEGRAM_GROUP_1: ${TELEGRAM_GROUP_1:-}
       TELEGRAM_GROUP_2: ${TELEGRAM_GROUP_2:-}
       WHATSAPP_ADMIN_1: ${WHATSAPP_ADMIN_1}
+      WHATSAPP_ADMIN_2: ${WHATSAPP_ADMIN_2}
       BRAVE_API_KEY: ${BRAVE_API_KEY}
       GH_TOKEN: ${GH_TOKEN:-}
       # gogcli: keep both OAuth config and file-keyring state on the mounted
@@ -28,6 +29,12 @@ services:
       GOG_KEYRING_BACKEND: file
       GOG_KEYRING_PASSWORD: ${GOG_KEYRING_PASSWORD:-openclaw-gog-keyring}
       GH_CONFIG_DIR: /home/node/.openclaw/gh
+      # wacli is used only for owner-approved outbound messages to third parties.
+      # Keep its independent linked-device state on the persistent OpenClaw volume.
+      WACLI_STORE_DIR: /home/node/.openclaw/.wacli
+      WACLI_DEVICE_LABEL: ${WACLI_DEVICE_LABEL:-OpenClaw outbound sender}
+      WACLI_SYNC_MAX_MESSAGES: ${WACLI_SYNC_MAX_MESSAGES:-1000}
+      WACLI_SYNC_MAX_DB_SIZE: ${WACLI_SYNC_MAX_DB_SIZE:-250MB}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-/home/openclaw/.openclaw}:/home/node/.openclaw
       - ${OPENCLAW_WORKSPACE_DIR:-/home/openclaw/.openclaw/workspace}:/home/node/.openclaw/workspace

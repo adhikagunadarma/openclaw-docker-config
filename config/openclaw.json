@@ -45,7 +45,8 @@
     "whatsapp": {
       "dmPolicy": "allowlist",
       "allowFrom": [
-        "${WHATSAPP_ADMIN_1}"
+        "${WHATSAPP_ADMIN_1}",
+        "${WHATSAPP_ADMIN_2}"
       ],
       "groupPolicy": "disabled",
       "configWrites": false
@@ -225,7 +226,8 @@
     "nativeSkills": "auto",
     "ownerAllowFrom": [
       "telegram:1527378541",
-      "whatsapp:${WHATSAPP_ADMIN_1}"
+      "whatsapp:${WHATSAPP_ADMIN_1}",
+      "whatsapp:${WHATSAPP_ADMIN_2}"
     ]
   },
   "messages": {
