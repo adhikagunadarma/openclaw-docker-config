@@ -43,6 +43,7 @@
       }
     },
     "whatsapp": {
+      "selfChatMode": true,
       "dmPolicy": "allowlist",
       "allowFrom": [
         "${WHATSAPP_ADMIN_1}",
