@@ -3,6 +3,13 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+for required_command in git grep; do
+  if ! command -v "$required_command" >/dev/null 2>&1; then
+    echo "ERROR: Required secret-scan command is unavailable: $required_command" >&2
+    exit 1
+  fi
+done
+
 echo "Scanning tracked files for secrets ..."
 
 FOUND=0

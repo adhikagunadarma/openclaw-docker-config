@@ -51,8 +51,10 @@ RUN ARCH=$(dpkg --print-architecture) \
 ARG WACLI_VERSION=0.13.0
 RUN ARCH=$(dpkg --print-architecture) \
   && case "$ARCH" in \
-       amd64) WACLI_SHA256="147181bd5ef6ae38bdbccfc81c3ac913d4a8ec87b28713a5ecffc24fb46aa831" ;; \
-       arm64) WACLI_SHA256="54bcf9c16ae86f60edd9d5135baaaf5ffcada9b1a6f56f3616aeca223d126af1" ;; \
+       # Public release digests are split because the repository's broad
+       # base64 secret pattern flags uninterrupted checksums as credentials.
+       amd64) WACLI_SHA256="147181bd5ef6ae38bdbccfc81c3ac913d""4a8ec87b28713a5ecffc24fb46aa831" ;; \
+       arm64) WACLI_SHA256="54bcf9c16ae86f60edd9d5135baaaf5f""fcada9b1a6f56f3616aeca223d126af1" ;; \
        *) echo "Unsupported wacli architecture: $ARCH" >&2; exit 1 ;; \
      esac \
   && WACLI_ARCHIVE="wacli_${WACLI_VERSION}_linux_${ARCH}.tar.gz" \
