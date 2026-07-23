@@ -26,6 +26,15 @@ elif [[ -L "$POLLYREACH_LEGACY_DIR" ]] \
 fi
 
 ###############################################################################
+# Remove retired wacli state
+###############################################################################
+WACLI_STATE_DIR="$HOME/.openclaw/.wacli"
+if [[ -d "$WACLI_STATE_DIR" && ! -L "$WACLI_STATE_DIR" ]]; then
+  echo "[entrypoint] Removing retired wacli credentials and local message store ..."
+  rm -rf -- "$WACLI_STATE_DIR"
+fi
+
+###############################################################################
 # Seed workspace templates (no-clobber — won't overwrite existing files)
 ###############################################################################
 TEMPLATES="/opt/workspace-templates"

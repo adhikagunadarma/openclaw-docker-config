@@ -1,9 +1,15 @@
 # WhatsApp Channel Setup
 
 The repository enables the official OpenClaw WhatsApp plugin for owner-only
-direct messages. Telegram remains enabled as a recovery channel. Explicit
-owner-approved messages to third parties use the same OpenClaw WhatsApp
-listener. Recipients do not need to be admitted to the inbound allowlist.
+direct messages. Telegram remains enabled as a recovery channel. In the pinned
+plugin, native direct-message recipients must also be present in `allowFrom`;
+there is no separate outbound-recipient policy.
+
+The official plugin package includes an optional `wacli` skill, but this
+deployment explicitly disables that skill and does not install its binary. Only
+the standard OpenClaw WhatsApp linked-device session is used. Container startup
+also removes the retired `.wacli` credential and local-message state directory;
+it does not remove the standard OpenClaw WhatsApp credentials.
 
 ## Before Deployment
 
@@ -39,6 +45,17 @@ installed into the mounted OpenClaw state directory on container startup.
 Do the pairing in a wide interactive SSH terminal. Do not relay the QR through
 Telegram or another image-compression path because the QR is both short-lived
 and sensitive.
+
+From the Hetzner infrastructure repository, the preferred operator command is:
+
+```bash
+make setup-whatsapp-auth
+```
+
+It checks the default listener first and changes nothing when WhatsApp is
+already connected. When the listener is logged out, it clears only the stale
+default session, renders one live QR in the terminal, restarts the gateway, and
+prints the final probe result. It never retries automatically.
 
 On the VPS, from `~/openclaw`, clear a logged-out session and start a fresh
 login:
@@ -77,8 +94,8 @@ disabled.
 
 ## Outbound Third-Party Messaging
 
-Do not pair a second WhatsApp Web client. OpenClaw's native message command can
-send to an explicit E.164 target through the already-linked listener:
+OpenClaw's native message command can send to an explicit E.164 target through
+the already-linked listener only when that target is present in `allowFrom`:
 
 ```bash
 docker compose exec openclaw-gateway \
@@ -86,17 +103,20 @@ docker compose exec openclaw-gateway \
   --target "+<RECIPIENT_E164>" --message "<FINAL_MESSAGE>"
 ```
 
-`allowFrom` controls who may send inbound commands; it does not block explicit
-outbound targets. Replies from non-allowlisted recipients are still rejected by
-the channel's `dmPolicy` and cannot become agent instructions.
+The pinned plugin uses the same `allowFrom` list for inbound direct-message
+admission and outbound direct-message target authorization. Adding a guest to
+that list would therefore also admit the guest's replies. Do not set
+`allowFrom: ["*"]` while direct messages are enabled.
+
+Sending direct messages to arbitrary guests while retaining a two-owner inbound
+allowlist requires a separate outbound transport, such as the official WhatsApp
+Business Platform, or a reviewed custom plugin that implements a distinct
+outbound policy. Do not pair a second WhatsApp Web client unless the owner
+explicitly accepts the account-restriction and reliability risks.
 
 For third-party sends, the agent must have an explicit recipient and final
 message text, show both to the requesting owner, and receive confirmation before
-using the native WhatsApp message action. For a batch or sheet-driven send, it
-must also confirm the source, recipient count, schedule, and a representative
-preview, reject empty, duplicate, malformed, or non-WhatsApp targets, and keep a
+using an approved outbound transport. For a batch or sheet-driven send, it must
+also confirm the source, recipient count, schedule, and a representative preview,
+reject empty, duplicate, malformed, or non-WhatsApp targets, and keep a
 send-result ledger.
-
-Start with one controlled outbound recipient. From an allowlisted WhatsApp
-operator or Telegram, ask the agent to send an exact message by WhatsApp.
-Confirm the normalized E.164 recipient and final message when prompted.

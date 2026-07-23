@@ -91,6 +91,9 @@
       "taskflow": {
         "enabled": true
       },
+      "wacli": {
+        "enabled": false
+      },
       "weather": {
         "enabled": true
       }
