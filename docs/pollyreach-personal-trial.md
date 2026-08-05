@@ -62,6 +62,26 @@ The skill requires manual activation:
 The token should be treated as a secret. Do not commit it and do not print it in
 logs or notes.
 
+Use the infrastructure helper on the active provider:
+
+```bash
+make setup-pollyreach
+```
+
+On first use, the helper registers the agent, writes the credential with mode
+`600`, and prints the activation link without printing the token. Open the link
+and sign in, then rerun the command to verify activation and display the
+assigned number. If credentials already exist (including after a full
+`~/.openclaw` restore), the helper checks them and does not register again.
+
+The credential is runtime state stored at
+`~/.openclaw/.config/PollyReach/key.json` on the host-mounted OpenClaw
+volume. It must not be placed in this repository or in `.env`.
+
+The assigned phone number is PollyReach account state. It does not need an
+environment variable or a repository config field; retrieve it through the
+activation/status flow when it needs to be displayed or verified.
+
 ## Personal Trial Scope
 
 Use only for explicit personal tasks.
