@@ -1,5 +1,8 @@
 # OpenClaw plugins installed into the persistent state directory at startup.
 # Format: plugin-id|install-spec
 
-# Match the plugin to the OpenClaw version pinned in docker/Dockerfile.
-whatsapp|npm:@openclaw/whatsapp@2026.6.11
+# Official plugins publish correction releases independently from OpenClaw core.
+# Keep these exact pins aligned with the 2026.7.1-2 core compatibility line.
+codex|@openclaw/codex@2026.7.1-1
+whatsapp|@openclaw/whatsapp@2026.7.1
+brave|@openclaw/brave-plugin@2026.7.1

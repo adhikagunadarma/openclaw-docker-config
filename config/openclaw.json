@@ -111,8 +111,9 @@
         "postCompactionMaxChars": 4000
       },
       "model": {
-        "primary": "openai/gpt-5.5",
+        "primary": "openai/gpt-5.6-luna",
         "fallbacks": [
+          "openai/gpt-5.5",
           "openai/gpt-5.4"
         ]
       },
@@ -131,18 +132,54 @@
         },
         "openai/gpt-5.4": {
           "alias": "openai-gpt-5.4",
+          "params": {
+            "thinking": "medium"
+          },
           "agentRuntime": {
             "id": "codex"
           }
         },
         "openai/gpt-5.4-mini": {
           "alias": "openai-gpt-5.4-mini",
+          "params": {
+            "thinking": "low"
+          },
           "agentRuntime": {
             "id": "codex"
           }
         },
         "openai/gpt-5.5": {
           "alias": "openai-gpt-5.5",
+          "params": {
+            "thinking": "medium"
+          },
+          "agentRuntime": {
+            "id": "codex"
+          }
+        },
+        "openai/gpt-5.6-sol": {
+          "alias": "openai-gpt-5.6-sol",
+          "params": {
+            "thinking": "high"
+          },
+          "agentRuntime": {
+            "id": "codex"
+          }
+        },
+        "openai/gpt-5.6-terra": {
+          "alias": "openai-gpt-5.6-terra",
+          "params": {
+            "thinking": "medium"
+          },
+          "agentRuntime": {
+            "id": "codex"
+          }
+        },
+        "openai/gpt-5.6-luna": {
+          "alias": "openai-gpt-5.6-luna",
+          "params": {
+            "thinking": "high"
+          },
           "agentRuntime": {
             "id": "codex"
           }
@@ -193,7 +230,8 @@
       },
       "heartbeat": {
         "every": "6h",
-        "model": "openai/gpt-5.4-mini",
+        "model": "openai/gpt-5.6-luna",
+        "isolatedSession": true,
         "session": "main",
         "target": "telegram",
         "prompt": "Check: Any blockers, opportunities, or progress updates needed?"
@@ -202,7 +240,19 @@
       "subagents": {
         "maxConcurrent": 2
       }
-    }
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true
+      },
+      {
+        "id": "heartbeat",
+        "model": "openai/gpt-5.6-luna",
+        "thinkingDefault": "low",
+        "heartbeat": {}
+      }
+    ]
   },
   "commands": {
     "native": "auto",

@@ -44,6 +44,12 @@ if [[ -d "$TEMPLATES" ]]; then
 fi
 
 ###############################################################################
+# Apply idempotent state/config migrations before loading persisted plugins
+###############################################################################
+echo "[entrypoint] Running OpenClaw post-upgrade migrations ..."
+openclaw doctor --fix --non-interactive
+
+###############################################################################
 # Install required OpenClaw plugins into persistent state
 ###############################################################################
 if [[ -f "$PLUGIN_MANIFEST" ]]; then
@@ -52,16 +58,30 @@ if [[ -f "$PLUGIN_MANIFEST" ]]; then
     plugin_id="$(echo "${plugin_id%%#*}" | xargs)"
     plugin_spec="$(echo "${plugin_spec:-}" | xargs)"
     [[ -z "$plugin_id" || -z "$plugin_spec" ]] && continue
+    expected_version="${plugin_spec##*@}"
 
     if openclaw plugins inspect "$plugin_id" --runtime --json >/dev/null 2>&1; then
-      echo "[entrypoint]   $plugin_id (already installed)"
-      continue
+      echo "[entrypoint]   updating $plugin_id to $plugin_spec"
+      openclaw plugins update "$plugin_spec" || true
+    else
+      echo "[entrypoint]   installing $plugin_id"
+      openclaw plugins install "$plugin_spec" --pin
     fi
 
-    echo "[entrypoint]   installing $plugin_id"
-    openclaw plugins install "$plugin_spec" --pin || {
-      echo "[entrypoint] WARNING: Failed to install plugin $plugin_id - continuing"
-    }
+    installed_version="$(openclaw plugins inspect "$plugin_id" --json \
+      | jq -er '.plugin.version')"
+    if [[ "$installed_version" != "$expected_version" ]]; then
+      echo "[entrypoint]   $plugin_id remained at $installed_version; force-installing $expected_version"
+      openclaw plugins install "$plugin_spec" --force --pin
+      installed_version="$(openclaw plugins inspect "$plugin_id" --json \
+        | jq -er '.plugin.version')"
+    fi
+
+    if [[ "$installed_version" != "$expected_version" ]]; then
+      echo "[entrypoint] ERROR: $plugin_id is $installed_version; expected $expected_version"
+      exit 1
+    fi
+    echo "[entrypoint]   $plugin_id $installed_version ready"
   done < "$PLUGIN_MANIFEST"
   echo "[entrypoint] Plugin installation complete."
 fi

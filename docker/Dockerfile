@@ -6,7 +6,7 @@
 # that needs a new binary, update this Dockerfile and rebuild.
 ###############################################################################
 
-FROM node:22-bookworm-slim
+FROM node:22.23.1-bookworm-slim
 
 # Install system dependencies as root
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -58,7 +58,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   && rm -rf /var/lib/apt/lists/*
 
 # Pin OpenClaw version for reproducible builds — bump explicitly when upgrading
-ARG OPENCLAW_VERSION=2026.6.11
+ARG OPENCLAW_VERSION=2026.7.1-2
 RUN npm install -g openclaw@${OPENCLAW_VERSION}
 
 # Install ClawHub CLI for skill management
