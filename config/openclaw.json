@@ -106,18 +106,23 @@
     "defaults": {
       "contextLimits": {
         "memoryGetMaxChars": 2500,
-        "memoryGetDefaultLines": 100,
-        "toolResultMaxChars": 20000,
         "postCompactionMaxChars": 4000
       },
       "model": {
-        "primary": "openai/gpt-5.6-luna",
+        "primary": "openai/gpt-6-astra",
         "fallbacks": [
-          "openai/gpt-5.5",
-          "openai/gpt-5.4"
+          "openai/gpt-5.6-luna"
         ]
       },
+      "thinkingDefault": "low",
+      "utilityModel": "openai/gpt-5.6-luna",
+      "systemAgent": { "agentId": "main" },
       "models": {
+        "openai/gpt-6-astra": {
+          "alias": "openai-gpt-6-astra",
+          "params": { "thinking": "low" },
+          "agentRuntime": { "id": "codex" }
+        },
         "google/gemini-2.5-flash": {
           "alias": "gemini-flash-2.5"
         },
@@ -178,7 +183,7 @@
         "openai/gpt-5.6-luna": {
           "alias": "openai-gpt-5.6-luna",
           "params": {
-            "thinking": "high"
+            "thinking": "low"
           },
           "agentRuntime": {
             "id": "codex"
@@ -218,15 +223,17 @@
           "alias": "litellm-claude-sonnet-4-6"
         }
       },
-      "imageGenerationModel": {
-        "primary": "openai/gpt-image-2"
+      "mediaModels": {
+        "image": {
+          "primary": "openai/gpt-image-2"
+        }
       },
       "pdfModel": {
-        "primary": "openai/gpt-5.4"
+        "primary": "openai/gpt-5.6-luna"
       },
       "compaction": {
         "mode": "safeguard",
-        "model": "openai/gpt-5.4-mini"
+        "thinkingLevel": "low"
       },
       "heartbeat": {
         "every": "6h",
@@ -238,22 +245,28 @@
       },
       "maxConcurrent": 1,
       "subagents": {
-        "maxConcurrent": 2
+        "maxConcurrent": 2,
+        "model": "openai/gpt-5.6-luna",
+        "thinking": "low"
       }
     },
-    "list": [
-      {
-        "id": "main",
-        "default": true
+    "ownership": "explicit",
+    "entries": {
+      "main": {
+        "workspace": "/home/node/.openclaw/workspace"
       },
-      {
-        "id": "heartbeat",
+      "heartbeat": {
         "model": "openai/gpt-5.6-luna",
         "thinkingDefault": "low",
         "heartbeat": {}
       }
-    ]
+    }
   },
+  "bindings": [
+    { "agentId": "main", "match": { "channel": "telegram", "accountId": "*" } },
+    { "agentId": "main", "match": { "channel": "whatsapp", "accountId": "*" } }
+  ],
+  "talk": { "agentId": "main" },
   "commands": {
     "native": "auto",
     "nativeSkills": "auto",
@@ -295,8 +308,7 @@
   },
   "logging": {
     "level": "info",
-    "consoleLevel": "info",
-    "redactSensitive": "tools"
+    "consoleLevel": "info"
   },
   "tools": {
     "web": {
