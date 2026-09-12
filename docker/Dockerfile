@@ -6,7 +6,9 @@
 # that needs a new binary, update this Dockerfile and rebuild.
 ###############################################################################
 
-FROM node:22.23.1-bookworm-slim
+# OpenClaw 2026.9.4 requires Node >=24.16.0 <25 (or >=26.1.0).
+# Stay on the Node 24 LTS line and pin the patch for reproducible builds.
+FROM node:24.16.0-bookworm-slim
 
 # Install system dependencies as root
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -58,7 +60,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   && rm -rf /var/lib/apt/lists/*
 
 # Pin OpenClaw version for reproducible builds — bump explicitly when upgrading
-ARG OPENCLAW_VERSION=2026.9.2
+ARG OPENCLAW_VERSION=2026.9.4
 RUN npm install -g openclaw@${OPENCLAW_VERSION}
 
 # Install ClawHub CLI for skill management
@@ -79,6 +81,12 @@ RUN sed -i 's/\r$//' /opt/config/plugins-manifest.txt /opt/config/skills-manifes
   && echo "" >> /opt/config/skills-manifest.txt
 COPY workspace-templates/ /opt/workspace-templates/
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# Docker owns process restarts, and the repository owns openclaw.json. Keep
+# runtime state writable while preventing Doctor/the gateway from rewriting
+# the deployment-managed config with resolved secret values.
+ENV OPENCLAW_NO_RESPAWN=1
+ENV NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
 
 USER node
 

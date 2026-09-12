@@ -2,7 +2,10 @@
 # Format: plugin-id|install-spec
 
 # Official plugins publish correction releases independently from OpenClaw core.
-# Keep these exact pins aligned with the 2026.9.2 core compatibility line.
-codex|@openclaw/codex@2026.9.2
-whatsapp|@openclaw/whatsapp@2026.9.2
-brave|@openclaw/brave-plugin@2026.9.2
+# Keep these exact pins aligned with the 2026.9.4 core compatibility line.
+codex|@openclaw/codex@2026.9.4
+whatsapp|@openclaw/whatsapp@2026.9.4
+brave|@openclaw/brave-plugin@2026.9.4
+deepseek|@openclaw/deepseek-provider@2026.9.4
+qwen|@openclaw/qwen-provider@2026.9.4
+zai|@openclaw/zai-provider@2026.9.4

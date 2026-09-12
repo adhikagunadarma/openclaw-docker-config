@@ -44,13 +44,7 @@ if [[ -d "$TEMPLATES" ]]; then
 fi
 
 ###############################################################################
-# Apply idempotent state/config migrations before loading persisted plugins
-###############################################################################
-echo "[entrypoint] Running OpenClaw post-upgrade migrations ..."
-openclaw doctor --fix --non-interactive
-
-###############################################################################
-# Install required OpenClaw plugins into persistent state
+# Reconcile required OpenClaw plugins before Doctor inspects configured providers
 ###############################################################################
 if [[ -f "$PLUGIN_MANIFEST" ]]; then
   echo "[entrypoint] Installing OpenClaw plugins from manifest ..."
@@ -85,6 +79,18 @@ if [[ -f "$PLUGIN_MANIFEST" ]]; then
   done < "$PLUGIN_MANIFEST"
   echo "[entrypoint] Plugin installation complete."
 fi
+
+###############################################################################
+# Run diagnostics with the pinned plugin cohort loaded
+###############################################################################
+# Plugin installation requires a writable configuration surface. Once the
+# manifest is reconciled, make the repository-managed config immutable for
+# Doctor and the gateway while leaving normal runtime state writable.
+export OPENCLAW_CONFIG_READONLY=1
+echo "[entrypoint] Validating repository-managed configuration ..."
+openclaw config validate --json | jq -e '.valid == true' >/dev/null
+echo "[entrypoint] Running OpenClaw post-upgrade plugin diagnostics ..."
+openclaw doctor --post-upgrade --json | jq -e '(.findings // []) | length == 0' >/dev/null
 
 ###############################################################################
 # Install ClawHub skills from the manifest (if present)
