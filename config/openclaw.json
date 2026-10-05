@@ -5,7 +5,7 @@
     }
   },
   "meta": {
-    "lastTouchedVersion": "2026.9.4",
+    "lastTouchedVersion": "2026.9.8",
     "migrations": {
       "modelPolicyAllowlist": true
     }
@@ -129,9 +129,6 @@
         "enabled": true
       },
       "healthcheck": {
-        "enabled": true
-      },
-      "taskflow": {
         "enabled": true
       },
       "wacli": {

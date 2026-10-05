@@ -1,14 +1,52 @@
-# OpenClaw 2026.9.8 upgrade checklist
+# Upgrade to OpenClaw 2026.9.8
 
-Current branch baseline: core 2026.9.4, Node 24.16.0, and six pinned external plugins at 2026.9.4. The gateway uses a bind-mounted state directory and a custom entrypoint. Run these steps for the active host (Hetzner or Tencent), using its existing deployment repo.
+The repository now pins core and all six external plugins to 2026.9.8. npm publication and the Node requirement were verified: Node 24.16.0 meets `>=24.16.0 <25 || >=26.1.0`.
 
-1. **Confirm the active host and installed version.** Use `make status SERVER_IP=openclaw-prod` in the Hetzner repo. `make ssh SERVER_IP=openclaw-prod` opens a shell for the few checks with no Make target, including `cd ~/openclaw && docker compose exec -T openclaw-gateway openclaw --version`. Check that no second gateway shares the same `.openclaw` state directory.
-2. **Preserve the rollback pair.** Record the currently running gateway image digest and save it. On Hetzner, use `make backup-upgrade PRESERVE_BACKUPS=true SERVER_IP=openclaw-prod` for a stopped-state backup and verify the archive. On Tencent, stop the gateway first, run `make backup-now`, verify the archive, then start it again. Keep the old image and backup together; an older image alone cannot open state migrated to schema 21.
-3. **Check package publication and compatibility.** Verify `openclaw@2026.9.8` and each package in `config/plugins-manifest.txt` with `npm view <package>@<chosen-version> version`. Choose a published compatible version for each plugin; official plugins can have correction releases independent of core. Check the 2026.9.8 `engines.node` requirement against `node:24.16.0-bookworm-slim`.
-4. **Prepare the config branch.** Set `OPENCLAW_VERSION` in `docker/Dockerfile` to `2026.9.8`, update each plugin manifest pin to the verified version, and remove the retired `taskflow` skill entry. Review workflows that use Tasks/TaskFlow, old Tool Search JavaScript, or internal `NO_REPLY`/automatic agent follow-ups. The prepared JSON now uses GPT-6 Sol as the primary model and GPT-6 Luna for fallback, utility, PDF, heartbeat, and subagents. Both models are exposed in the model entries and allowlist with the Codex runtime and low effort. Confirm account access after upgrading. Existing cron overrides require running `make set-cron-models` after deployment; the helper now targets GPT-6 Luna. GPT-6.1 Sol is not selected by this change.
-5. **Repair state before normal startup.** The custom `docker/entrypoint.sh` currently makes config read-only and runs only `doctor --post-upgrade`; it does not run `doctor --fix`. With the gateway stopped and the new image available, run `openclaw doctor --fix` using the same mounts, environment, user, and plugin set. Review any proposed config changes because `config/openclaw.json` is repository-managed. Then run config validation and post-upgrade diagnostics, and resolve findings before starting the gateway. Test this sequence on a copy of state first if possible.
-6. **Build and deploy.** Run `scripts/validate-config.sh` and `scripts/check-secrets.sh`; run `bash scripts/build-and-push.sh` from the Docker config repo. Use `make deploy SERVER_IP=openclaw-prod` from the Hetzner repo after repair. Do not start the old image on migrated state. `make push-config` restarts the gateway, so do not use it between stopping the gateway and completing Doctor repair.
-7. **Verify service behavior.** Use `make status SERVER_IP=openclaw-prod` and `make logs SERVER_IP=openclaw-prod`. Confirm `openclaw --version`, `openclaw health`, and clean gateway logs. Test Telegram and WhatsApp inbound/outbound messages, Codex auth and a model turn, cron/heartbeat delivery, Brave search, browser use, and workspace sync. Check that no plugin was reverted to an old pin on container restart.
-8. **If recovery is needed, restore both parts.** First point the server's Compose image at the recorded 2026.9.4 image and confirm it is available locally. Only then run `make restore BACKUP=<backup-filename> SERVER_IP=openclaw-prod`: this Make target automatically restarts the gateway after extracting the backup. Running it while Compose still points at 2026.9.8 would migrate the restored state again. Work written after the archive will not be in the restored state.
+The prepared config selects GPT-6 Sol as primary, with GPT-6 Luna for fallback, utility, PDF, heartbeat, and subagents. Both models use the Codex runtime and low effort. GPT-6.1 Sol is not selected; its support was incomplete in this release. Account access must still be verified on the live gateway.
 
-Sources: [2026.9.5 migration notes](https://docs.openclaw.ai/releases/2026.9.5), [2026.9.7 migration notes](https://docs.openclaw.ai/releases/2026.9.7), [2026.9.8 notes](https://docs.openclaw.ai/releases/2026.9.8), [Docker repair guidance](https://docs.openclaw.ai/install/docker).
+## Run from your Mac
+
+```bash
+cd /Users/Pong/Project/Personal/pepongclaw/openclaw-terraform-hetzner
+source config/inputs.sh
+make status SERVER_IP=openclaw-prod
+make build
+make upgrade SERVER_IP=openclaw-prod
+make status SERVER_IP=openclaw-prod
+make logs SERVER_IP=openclaw-prod
+```
+
+`make build` builds and pushes images tagged `2026.9.8`. It requires Docker and a GHCR login with push access. `make upgrade` requires the existing server GHCR pull access. Neither command is a Terraform infrastructure change.
+
+`make upgrade`:
+
+1. Validates the local config and stages it on the server.
+2. Pulls the version-tagged image and checks its OpenClaw version before touching live state.
+3. Checks backup capacity before stopping services. Free enough disk space for the new image and a full state backup first.
+4. Saves Compose configuration and tags the current image for recovery in `~/backups/upgrade-TIMESTAMP`.
+5. Stops gateway and sync services and takes a verified backup with retention cleanup disabled. The backup path is recorded in the recovery directory's `backup.log`.
+6. Installs the prepared `openclaw.json` and writes a managed Compose image override. An existing custom override is refused for manual review.
+7. Runs the new entrypoint in explicit repair mode: reconciles pinned plugins, runs Doctor repair, then validates config and post-upgrade diagnostics. It does not start the gateway in repair mode.
+8. Starts the gateway, checks health for up to five minutes, and resumes workspace sync when configured. Errors after shutdown leave services stopped for investigation; no automatic downgrade is attempted.
+
+Do not run `make push-config` between shutdown and repair: that target restarts the gateway. Doctor can migrate the live config; review and carry intentional changes back into the repository before a subsequent config push. Normal `make deploy` respects the managed Compose override and continues using the versioned image.
+
+## Verify models and scheduled jobs
+
+Confirm version 2026.9.8, send Telegram and WhatsApp test messages, and use `/codex models` in chat to confirm account access to GPT-6 Sol and Luna. Test a model turn, Brave search, browser use, and scheduled delivery.
+
+Once Luna is available:
+
+```bash
+make set-cron-models
+```
+
+This updates existing model-backed cron jobs, including disabled jobs, to GPT-6 Luna with low effort. Updating JSON defaults alone does not replace saved cron overrides.
+
+## Recovery
+
+Do not start the old image on migrated databases. Restore the image and matching state backup together; work after the backup is lost from the restored state.
+
+The recovery directory contains the original Compose files, old image ID, and `rollback-image.yml`. Before `make restore`, point the active gateway image at the saved `openclaw-gateway:pre-upgrade-TIMESTAMP` tag. The restore target automatically starts services after extracting the backup, so the image must be selected first. An image-only downgrade is unsafe.
+
+Sources: [2026.9.5 migration notes](https://docs.openclaw.ai/releases/2026.9.5), [2026.9.7 migration notes](https://docs.openclaw.ai/releases/2026.9.7), [2026.9.8 notes](https://docs.openclaw.ai/releases/2026.9.8).

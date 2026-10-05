@@ -86,11 +86,27 @@ fi
 # Plugin installation requires a writable configuration surface. Once the
 # manifest is reconciled, make the repository-managed config immutable for
 # Doctor and the gateway while leaving normal runtime state writable.
+if [[ "${OPENCLAW_UPGRADE_REPAIR:-0}" == "1" ]]; then
+  unset OPENCLAW_CONFIG_READONLY
+  echo "[entrypoint] Repairing state for the upgrade ..."
+  openclaw doctor --fix
+fi
+
 export OPENCLAW_CONFIG_READONLY=1
 echo "[entrypoint] Validating repository-managed configuration ..."
 openclaw config validate --json | jq -e '.valid == true' >/dev/null
 echo "[entrypoint] Running OpenClaw post-upgrade plugin diagnostics ..."
-openclaw doctor --post-upgrade --json | jq -e '(.findings // []) | length == 0' >/dev/null
+if ! diagnostics=$(openclaw doctor --post-upgrade --json); then
+  printf '%s\n' "$diagnostics" >&2
+  exit 1
+fi
+printf '%s\n' "$diagnostics"
+jq -e '(.findings // []) | length == 0' >/dev/null <<<"$diagnostics"
+
+if [[ "${OPENCLAW_UPGRADE_REPAIR:-0}" == "1" ]]; then
+  echo "[entrypoint] Upgrade repair and diagnostics complete."
+  exit 0
+fi
 
 ###############################################################################
 # Install ClawHub skills from the manifest (if present)

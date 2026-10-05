@@ -6,7 +6,7 @@
 # that needs a new binary, update this Dockerfile and rebuild.
 ###############################################################################
 
-# OpenClaw 2026.9.4 requires Node >=24.16.0 <25 (or >=26.1.0).
+# OpenClaw 2026.9.8 requires Node >=24.16.0 <25 (or >=26.1.0).
 # Stay on the Node 24 LTS line and pin the patch for reproducible builds.
 FROM node:24.16.0-bookworm-slim
 
@@ -60,7 +60,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   && rm -rf /var/lib/apt/lists/*
 
 # Pin OpenClaw version for reproducible builds — bump explicitly when upgrading
-ARG OPENCLAW_VERSION=2026.9.4
+ARG OPENCLAW_VERSION=2026.9.8
 RUN npm install -g openclaw@${OPENCLAW_VERSION}
 
 # Install ClawHub CLI for skill management
