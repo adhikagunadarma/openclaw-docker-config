@@ -2,7 +2,7 @@
 
 The repository now pins core and all six external plugins to 2026.9.8. npm publication and the Node requirement were verified: Node 24.16.0 meets `>=24.16.0 <25 || >=26.1.0`.
 
-The prepared config selects GPT-6 Sol as primary, with GPT-6 Luna for fallback, utility, PDF, heartbeat, and subagents. Both models use the Codex runtime and low effort. GPT-6.1 Sol is not selected; its support was incomplete in this release. Account access must still be verified on the live gateway.
+The prepared config selects GPT-6 Luna as primary, with GPT-6 Sol as fallback. Utility, PDF, heartbeat, and subagents also use GPT-6 Luna. Both models use the Codex runtime and low effort. GPT-6.1 Sol is not selected; its support was incomplete in this release. Account access must still be verified on the live gateway.
 
 ## Run from your Mac
 
@@ -26,7 +26,7 @@ make logs SERVER_IP=openclaw-prod
 4. Saves Compose configuration and tags the current image for recovery in `~/backups/upgrade-TIMESTAMP`.
 5. Stops gateway and sync services and takes a verified backup with retention cleanup disabled. The backup path is recorded in the recovery directory's `backup.log`.
 6. Installs the prepared `openclaw.json` and writes a managed Compose image override. An existing custom override is refused for manual review.
-7. Runs the new entrypoint in explicit repair mode: reconciles pinned plugins, runs Doctor repair, then validates config and post-upgrade diagnostics. It does not start the gateway in repair mode.
+7. Runs the new entrypoint in explicit repair mode: reconciles pinned plugins, runs Doctor repair, then validates config and post-upgrade diagnostics. Output is saved in the recovery directory as `repair.log`. It does not start the gateway in repair mode.
 8. Starts the gateway, checks health for up to five minutes, and resumes workspace sync when configured. Errors after shutdown leave services stopped for investigation; no automatic downgrade is attempted.
 
 Do not run `make push-config` between shutdown and repair: that target restarts the gateway. Doctor can migrate the live config; review and carry intentional changes back into the repository before a subsequent config push. Normal `make deploy` respects the managed Compose override and continues using the versioned image.
@@ -41,7 +41,7 @@ Once Luna is available:
 make set-cron-models
 ```
 
-This updates existing model-backed cron jobs, including disabled jobs, to GPT-6 Luna with low effort. Updating JSON defaults alone does not replace saved cron overrides.
+This updates editable model-backed cron jobs, including disabled jobs, to GPT-6 Luna with low effort. System-owned declared jobs are skipped because the cron client cannot edit them. Updating JSON defaults alone does not replace saved cron overrides.
 
 ## Recovery
 
