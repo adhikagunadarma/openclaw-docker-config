@@ -5,10 +5,16 @@
     }
   },
   "meta": {
-    "lastTouchedVersion": "2026.9.8",
+    "lastTouchedVersion": "2026.11.3",
     "migrations": {
       "modelPolicyAllowlist": true,
-      "utilityModelSeparation": true
+      "utilityModelSeparation": true,
+      "webhookListeners": {
+        "telegram": [],
+        "feishu": [],
+        "msteams": [],
+        "nextcloud-talk": []
+      }
     }
   },
   "gateway": {
@@ -137,6 +143,15 @@
       },
       "weather": {
         "enabled": true
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "yt": {
+        "enabled": false
       }
     }
   },
@@ -159,6 +174,20 @@
       "utilityModel": "openai/gpt-6-luna",
       "systemAgent": { "agentId": "main" },
       "models": {
+        "openai/gpt-6.2-sol": {
+          "alias": "gpt-6.2-sol",
+          "params": { "thinking": "low" },
+          "agentRuntime": { "id": "codex" }
+        },
+        "openai/gpt-6.2-astra": {
+          "alias": "gpt-6.2-astra",
+          "agentRuntime": { "id": "codex" }
+        },
+        "openai/gpt-6.1-terra": {
+          "alias": "gpt-6.1-terra",
+          "params": { "thinking": "high" },
+          "agentRuntime": { "id": "codex" }
+        },
         "openai/gpt-6-sol": {
           "alias": "openai-gpt-6-sol",
           "params": { "thinking": "low" },
@@ -276,6 +305,9 @@
       },
       "modelPolicy": {
         "allow": [
+          "openai/gpt-6.2-sol",
+          "openai/gpt-6.2-astra",
+          "openai/gpt-6.1-terra",
           "openai/gpt-6-sol",
           "openai/gpt-6-luna",
           "openai/gpt-6-astra",
@@ -332,12 +364,36 @@
     "ownership": "explicit",
     "entries": {
       "main": {
-        "workspace": "/home/node/.openclaw/workspace"
+        "workspace": "/home/node/.openclaw/workspace",
+        "models": {
+          "openai/gpt-5.6-terra": {
+            "params": { "thinking": "medium" },
+            "agentRuntime": { "id": "codex" },
+            "alias": "openai-gpt-5.6-terra"
+          },
+          "openai/gpt-5.6-luna": {
+            "params": { "thinking": "low" },
+            "agentRuntime": { "id": "codex" },
+            "alias": "openai-gpt-5.6-luna"
+          }
+        }
       },
       "heartbeat": {
         "model": {
           "primary": "openai/gpt-6-luna",
           "fallbacks": []
+        },
+        "models": {
+          "openai/gpt-5.6-terra": {
+            "params": { "thinking": "medium" },
+            "agentRuntime": { "id": "codex" },
+            "alias": "openai-gpt-5.6-terra"
+          },
+          "openai/gpt-5.6-luna": {
+            "params": { "thinking": "low" },
+            "agentRuntime": { "id": "codex" },
+            "alias": "openai-gpt-5.6-luna"
+          }
         },
         "thinkingDefault": "low",
         "heartbeat": {}
